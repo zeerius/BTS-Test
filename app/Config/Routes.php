@@ -9,7 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 
 $routes->post('register', 'AuthController::register');
 $routes->post('login', 'AuthController::login');
-$routes->group('auth', ['filter' => 'auth'], function (RouteCollection $routes) {
+$routes->group('', ['filter' => 'auth'], function (RouteCollection $routes) {
     $routes->get('checklist', 'ChecklistController::getAll');
     $routes->post('checklist', 'ChecklistController::create');
     $routes->delete('checklist/(:checkListId)', 'ChecklistController::delete');
