@@ -12,11 +12,11 @@ $routes->post('login', 'AuthController::login');
 $routes->group('', ['filter' => 'auth'], function (RouteCollection $routes) {
     $routes->get('checklist', 'ChecklistController::getAll');
     $routes->post('checklist', 'ChecklistController::create');
-    $routes->delete('checklist/(:checkListId)', 'ChecklistController::delete');
-    $routes->get('checklist/(:checkListId)/item', 'ChecklistController::getAllItem');
-    $routes->post('checklist/(:checkListId)/item', 'ChecklistController::createItem');
-    $routes->get('checklist/(:checkListId)/item/(:checkListItemId)', 'ChecklistController::getItem');
-    $routes->put('checklist/(:checkListId)/item/(:checkListItemId)', 'ChecklistController::updateItemStatus');
-    $routes->delete('checklist/(:checkListId)/item/(:checkListItemId)', 'ChecklistController::deleteItem');
-    $routes->put('checklist/(:checkListId)/item/rename/(:checkListItemId)', 'ChecklistController::renameItem');
+    $routes->delete('checklist/(:num)', 'ChecklistController::delete/$1');
+    $routes->get('checklist/(:num)/item', 'ChecklistController::getAllItem/$1');
+    $routes->post('checklist/(:num)/item', 'ChecklistController::createItem/$1');
+    $routes->get('checklist/(:num)/item/(:num)', 'ChecklistController::getItem/$1/$2');
+    $routes->put('checklist/(:num)/item/(:num)', 'ChecklistController::updateItemStatus/$1/$2');
+    $routes->delete('checklist/(:num)/item/(:num)', 'ChecklistController::deleteItem/$1/$2');
+    $routes->put('checklist/(:num)/item/rename/(:num)', 'ChecklistController::renameItem/$1/$2');
 });

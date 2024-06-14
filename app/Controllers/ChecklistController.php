@@ -42,7 +42,7 @@ class ChecklistController extends ResourceController
             $model->save($data);
             
             $response = [
-                'messages' => 'Berhasil',
+                'messages' => 'Berhasil membuat checklist baru',
             ];
             return $this->respond($response, 200);
         } else {
@@ -59,19 +59,22 @@ class ChecklistController extends ResourceController
         $data = $model->where('id', $checkListId)->delete();
         
         $response = [
-            'messages' => 'Berhasil',
-            'data' => $data
+            'messages' => 'Berhasil menghapus data checklist',
         ];
         return $this->respond($response, 200);
     }
 
-    public function getAllItems($checkListId = null)
+    public function getAllItem($checkListId = null)
     {
+
         $model = new ChecklistItemModel();
-        $items = $model->where('checklist_id', $checkListId)->findAll();
+        $items = $model
+            ->where('checklist_id', $checkListId)
+            ->where('status', 1)
+            ->findAll();
         
         $response = [
-            'messages' => 'Berhasil',
+            'messages' => 'Berhasil mengambil data semua checklist item',
             'data' => $items
         ];
         return $this->respond($response, 200);
@@ -80,19 +83,19 @@ class ChecklistController extends ResourceController
     public function createItem($checkListId = null)
     {
         $rules = [
-            'name' => 'required',
+            'itemName' => 'required',
         ];
 
         if ($this->validate($rules)) {
             $model = new ChecklistItemModel();
             $data = [
-                'item_name' => $this->request->getVar('name'),
+                'item_name' => $this->request->getVar('itemName'),
                 'checklist_id' => $checkListId
             ];
             $model->save($data);
             
             $response = [
-                'messages' => 'Berhasil',
+                'messages' => 'Berhasil membuat item checklist',
             ];
             return $this->respond($response, 200);
         } else {
@@ -111,7 +114,7 @@ class ChecklistController extends ResourceController
             ->first();
         
         $response = [
-            'messages' => 'Berhasil',
+            'messages' => 'Berhasil mengambil data item checklist',
             'data' => $item
         ];
         return $this->respond($response, 200);
@@ -119,31 +122,38 @@ class ChecklistController extends ResourceController
 
     public function renameItem($checkListId = null, $checklistItemId = null)
     {
-        $model = new ChecklistItemModel();
-        $data = $model
-            ->where('id', $checklistItemId)
-            ->where('checklist_id', $checkListId)
-            ->set($this->request->getVar())
-            ->update();
-        
-        $response = [
-            'messages' => 'Berhasil',
-            'data' => $data
+        $rules = [
+            'itemName' => 'required',
         ];
-        return $this->respond($response, 200);
+
+        if ($this->validate($rules)) {
+            $model = new ChecklistItemModel();
+            $model->where('id', $checklistItemId)
+                ->where('checklist_id', $checkListId)
+                ->set('item_name', $this->request->getVar('itemName'))
+                ->update();
+            
+            $response = [
+                'messages' => 'Berhasil mengubah data item checklist',
+            ];
+            return $this->respond($response, 200);
+        } else {
+            $response = [
+                'error' => $this->validator->getErrors(),
+            ];
+            return $this->fail($response);
+        }
     }
 
     public function deleteItem($checkListId = null, $checklistItemId = null)
     {
         $model = new ChecklistItemModel();
-        $data = $model
-            ->where('id', $checklistItemId)
+        $model->where('id', $checklistItemId)
             ->where('checklist_id', $checkListId)
             ->delete();
         
         $response = [
-            'messages' => 'Berhasil',
-            'data' => $data
+            'messages' => 'Berhasil menghapus item checklist',
         ];
         return $this->respond($response, 200);
     }
@@ -159,13 +169,13 @@ class ChecklistController extends ResourceController
 
         $model = new ChecklistItemModel();
         $data = $model
+            ->where('id', $checklistItemId)
             ->where('checklist_id', $checkListId)
             ->set('status', $status)
             ->update();
         
         $response = [
-            'messages' => 'Berhasil',
-            'data' => $data
+            'messages' => 'Berhasil mengubah status item checklist menjadi '.$status?'aktif':'tidak aktif',
         ];
         return $this->respond($response, 200);
     }
